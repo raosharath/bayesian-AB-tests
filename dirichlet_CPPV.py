@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import numpy as np, scipy.stats as spstats, os
-import matplotlib.pyplot as pl, pandas as pd
+import matplotlib.pyplot as plt, pandas as pd
 
 import bayesian_utils
 
@@ -46,12 +46,24 @@ print 'To start with, A and B have same count vector. Hence, evenly placed. Prob
 '''
 Lets explore a bit by keeping variant A constant and changing B
 Change B such that more page views have 0 clicks and fewer with 3 clicks
-Total page views remain constant at 500
+such that total page views remain constant at 500
 '''
 print '\n\nAnd now we start making B progressively worse than A: '
+xaxis_vector = list()
+yaxis_vector = list()
 for incremental_pvs_with_zero_clicks in range(0, 50, 5):
     regenerated_count_vector_variantB = count_vector_variantB + [ incremental_pvs_with_zero_clicks, 0, 0, -incremental_pvs_with_zero_clicks ]
     prob_of_better = bayesian_utils.prob_A_better_than_B(count_vector_variantA, regenerated_count_vector_variantB, prior_vector, reward_per_outcome_category)
+    xaxis_vector.append( incremental_pvs_with_zero_clicks )
+    yaxis_vector.append( prob_of_better)
+    print xaxis_vector
     print '# incremental page views with 0 clicks:', incremental_pvs_with_zero_clicks, ' count_vector_variantA:', count_vector_variantA, ' count_vector_variantB:', regenerated_count_vector_variantB, ' Prob(A > B): ', prob_of_better
+
+FONTSIZE = 20
+plt.plot(xaxis_vector, yaxis_vector)
+plt.xlabel('Incremental page views in B with 0 clicks', fontsize = FONTSIZE)
+plt.ylabel('P(A > B)', fontsize = FONTSIZE)
+plt.title('Evolution of P(A > B) as B gets worse', fontsize = FONTSIZE)
+
 
 
